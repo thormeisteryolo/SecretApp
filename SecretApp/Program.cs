@@ -8,9 +8,59 @@
         static async Task Main(string[] args)
         {
             string[] choices = {"Logga in", "Lägg till användare", "Ändra Lösenord", "Avsluta" };
+            int selektedIndex = 0;
+
             bool runtask = true;
+            while (runtask == true)
+            {
+                Console.Clear();
+                Console.WriteLine("Välkommen, vad vill du göra?");
+                for (int i = 0; i < choices.Length; i++)
+                {
+                    if (i == selektedIndex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.WriteLine($"->{choices[i]}");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"  {choices[i]}");
+                    }
+                }
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
-
+                    switch(key)
+                    {
+                        case ConsoleKey.UpArrow:
+                            selektedIndex = (selektedIndex == 0) ? choices.Length - 1 : selektedIndex - 1;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            selektedIndex = (selektedIndex == choices.Length - 1) ? 0 : selektedIndex + 1;
+                            break;
+                        case ConsoleKey.Enter:
+                            Console.Clear();
+                            runtask = false;
+                            switch (choices[selektedIndex])
+                            {
+                                case "Logga in":
+                                    ShowUsers();
+                                    break;
+                                case "Lägg till användare":
+                                    AddUser();
+                                    break;
+                                case "Ändra lösenord":
+                                    ChangePassword();
+                                    break;
+                                case "Avsluta":
+                                    EndApplication();
+                                    break;  
+                            }
+                        break;
+                    }
+                
+            }
         }
 
         static void AddUser()
@@ -30,7 +80,7 @@
 
         static void EndApplication()
         { 
-        
+
         }
     }
 }
