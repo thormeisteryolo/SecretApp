@@ -4,9 +4,11 @@
     {
         static string[] userNames = { "Pelle", "Stina", "Ali" };
         static string[] userPasswords = { "1234", "abcd", "qwerty" };
-
-        static async Task Main(string[] args)
+        static int userSelected = 0;
+        static int Tries = 0;
+        static void Main(string[] args)
         {
+            Tries = 0;
             string[] choices = { "Logga in", "Lägg till användare", "Ändra Lösenord", "Avsluta" };
             int selektedIndex = 0;
 
@@ -108,7 +110,9 @@
                         break;
                     case ConsoleKey.Enter:
                         Console.Clear();
+                        userSelected = namesIndex;
                         runsecondtask = false;
+                        EnterPassword();
                         break;
                 }
             }
@@ -116,7 +120,33 @@
 
         static void EnterPassword()
         {
-            
+            Console.Clear ();
+            Console.WriteLine("Enter password");
+
+            string password = Console.ReadLine();
+            if (password == userPasswords[userSelected])
+            {
+                Console.Clear();
+                Console.Write($"Welcome {userNames[userSelected]}");
+                Thread.Sleep (2000);
+            }
+            else
+            {
+                if (Tries <= 3)
+                {
+                    Console.WriteLine("Wrong password, try again.");
+                    Thread.Sleep(2000);
+                    Tries++;
+                    EnterPassword();
+                }
+                else 
+                {
+                    Console.Clear();
+                    Console.WriteLine("To many tries have been made, taking you back to the menu.");
+                    Thread.Sleep(3000);
+                    Main();
+                }
+            }
         }
             static void EndApplication()
             {
