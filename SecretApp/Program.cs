@@ -8,6 +8,10 @@
         static int Tries = 0;
         static void Main(string[] args)
         {
+            Menu();
+        }
+        static void Menu()
+        {
             Tries = 0;
             string[] choices = { "Logga in", "Lägg till användare", "Ändra Lösenord", "Avsluta" };
             int selektedIndex = 0;
@@ -15,6 +19,7 @@
             bool runtask = true;
             while (runtask == true)
             {
+                Console.CursorVisible = false;
                 Console.Clear();
                 Console.WriteLine("Välkommen, vad vill du göra?");
                 for (int i = 0; i < choices.Length; i++)
@@ -120,6 +125,7 @@
 
         static void EnterPassword()
         {
+            Console.CursorVisible = true;
             Console.Clear ();
             Console.WriteLine("Enter password");
 
@@ -132,10 +138,11 @@
             }
             else
             {
-                if (Tries <= 3)
+                if (Tries < 3)
                 {
-                    Console.WriteLine("Wrong password, try again.");
-                    Thread.Sleep(2000);
+                    Console.Clear();
+                    Console.WriteLine("Wrong password");
+                    Thread.Sleep(1000);
                     Tries++;
                     EnterPassword();
                 }
@@ -144,7 +151,7 @@
                     Console.Clear();
                     Console.WriteLine("To many tries have been made, taking you back to the menu.");
                     Thread.Sleep(3000);
-                    Main();
+                    Menu();
                 }
             }
         }
