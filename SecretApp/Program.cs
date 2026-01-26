@@ -1,4 +1,7 @@
-﻿namespace SecretApp
+﻿using System.Reflection.Metadata;
+using System.Collections.Generic;
+
+namespace SecretApp
 {
     internal class Program
     {
@@ -126,7 +129,7 @@
         static void EnterPassword()
         {
             Console.CursorVisible = true;
-            Console.Clear ();
+            Console.Clear();
             Console.WriteLine("Enter password");
 
             string password = Console.ReadLine();
@@ -134,7 +137,7 @@
             {
                 Console.Clear();
                 Console.Write($"Welcome {userNames[userSelected]}");
-                Thread.Sleep (2000);
+                Thread.Sleep(2000);
             }
             else
             {
@@ -146,7 +149,7 @@
                     Tries++;
                     EnterPassword();
                 }
-                else 
+                else
                 {
                     Console.Clear();
                     Console.WriteLine("To many tries have been made, taking you back to the menu.");
@@ -155,11 +158,11 @@
                 }
             }
         }
-            static void EndApplication()
-            {
+        static void EndApplication()
+        {
             Console.WriteLine("Closing application");
             Thread.Sleep(2000);
-            }
-        
+        }
+
     }
 }
