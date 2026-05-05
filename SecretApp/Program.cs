@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Collections.Generic;
-
+﻿
 namespace SecretApp
 {
     internal class Program
@@ -9,6 +7,7 @@ namespace SecretApp
         static string[] userPasswords = { "1234", "abcd", "qwerty" };
         static int userSelected = 0;
         static int Tries = 0;
+        static bool Logged = false;
         static void Main(string[] args)
         {
             Menu();
@@ -16,7 +15,7 @@ namespace SecretApp
         static void Menu()
         {
             Tries = 0;
-            string[] choices = { "Logga in", "Lägg till användare", "Ändra Lösenord", "Avsluta" };
+            string[] choices = { "Logga in", "Lägg till användare", "Ta bort användare", "Ändra Lösenord", "Avsluta" };
             int selektedIndex = 0;
 
             bool runtask = true;
@@ -24,7 +23,14 @@ namespace SecretApp
             {
                 Console.CursorVisible = false;
                 Console.Clear();
-                Console.WriteLine("Välkommen, vad vill du göra?");
+                if (Logged == true)
+                {
+                    Console.WriteLine($"Hej {userNames[userSelected]}");
+                }
+                else {
+                    Console.WriteLine("Hej");
+                }
+                    
                 for (int i = 0; i < choices.Length; i++)
                 {
                     if (i == selektedIndex)
@@ -60,7 +66,10 @@ namespace SecretApp
                             case "Lägg till användare":
                                 AddUser();
                                 break;
-                            case "Ändra lösenord":
+                            case "Ta bort användare":
+                                RemoveUser();
+                                break;
+                            case "Ändra Lösenord":
                                 ChangePassword();
                                 break;
                             case "Avsluta":
@@ -75,12 +84,108 @@ namespace SecretApp
 
         static void AddUser()
         {
-            Console.WriteLine("Hello from AddUser()");
-        }
+            Console.Write("Namn: ");
+            string name = Console.ReadLine();
+            Console.Write("Lösenord: ");
+            string password = Console.ReadLine();
+            Console.Clear();
+            string[] tempNames = new string[userNames.Length + 1];
+            string[] tempPasswords = new string[userPasswords.Length + 1];
+            int j = userNames.Length;
+            for (int i = 0; i < userNames.Length; i++)
+            {
+                tempNames[i] = userNames[i];
+                tempPasswords[i] = userPasswords[i];
+            }
+            tempNames[j] = name;
+            tempPasswords[j] = password;
 
+            userNames = tempNames;
+            userPasswords = tempPasswords;
+
+            Menu();
+
+        }
+        static void RemoveUser()
+        {
+            Console.Clear();
+           if (Logged == false)
+            {
+                Console.WriteLine("Du är inte inloggad.");
+                Thread.Sleep(2000);
+                Menu();
+            }
+
+
+            Console.Write("Namn: ");
+            string name = Console.ReadLine();
+            if (userNames.Contains(name) == false || userNames[userSelected] != name)
+            {
+                Console.WriteLine("Felaktikt namn");
+                Thread.Sleep(2000);
+                RemoveUser();
+            }
+            Console.Write("Lösenord: ");
+            string password = Console.ReadLine();
+            if (userPasswords.Contains(password) == false)
+            {
+                Console.WriteLine("Felaktigt lösenord");
+                Thread.Sleep(2000);
+                RemoveUser();
+            }
+            Console.Clear();
+            
+            string[] tempNames = new string[userNames.Length];
+            string[] tempPasswords = new string[userPasswords.Length];
+            int j = 0;
+            for (int i = 0; i < tempNames.Length - 1;)
+            {
+                if (userNames[i] == name)
+                {
+                    j++;
+                }
+                
+                tempNames[i] = userNames[j];
+                tempPasswords[i] = userPasswords[j];
+                j++;
+                i++;
+            }
+            userNames = tempNames;
+            userPasswords = tempPasswords;
+            Logged = false;
+            Menu();
+        }
         static void ChangePassword()
         {
+            Console.Clear();
+            if (Logged == false) {
+                Console.WriteLine("Du är inte inloggad");
+                Thread.Sleep(2000);
+                Menu();
+            }
+            Console.Write("Namn: ");
+            string name = Console.ReadLine();
+            if (name != userNames[userSelected])
+            {
+                Console.WriteLine("Felaktigt namn.");
+                Thread.Sleep(2000);
+                ChangePassword();
+            }
+            Console.Write("Lösenord: ");
+            string password = Console.ReadLine();
+            if (password != userPasswords[userSelected])
+            {
+                Console.WriteLine("Felaktigt lösenord.");
+                Thread.Sleep(2000);
+                ChangePassword();
+            }
+            Console.Clear();
+            Console.Write("Nytt lösenord: ");
+            string newPassword = Console.ReadLine();
 
+            userPasswords[userSelected] = newPassword;
+            Logged = false;
+            Menu();
         }
 
         static void ShowUsers()
@@ -136,15 +241,17 @@ namespace SecretApp
             if (password == userPasswords[userSelected])
             {
                 Console.Clear();
-                Console.Write($"Welcome {userNames[userSelected]}");
+                Console.Write($"Välkomen {userNames[userSelected]}");
+                Logged = true;
                 Thread.Sleep(2000);
+                Menu();
             }
             else
             {
                 if (Tries < 3)
                 {
                     Console.Clear();
-                    Console.WriteLine("Wrong password");
+                    Console.WriteLine("Felaktigt lösenord");
                     Thread.Sleep(1000);
                     Tries++;
                     EnterPassword();
@@ -152,7 +259,7 @@ namespace SecretApp
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("To many tries have been made, taking you back to the menu.");
+                    Console.WriteLine("För många inloggningsförsök har gjorts, går tillbaka till menyn.");
                     Thread.Sleep(3000);
                     Menu();
                 }
